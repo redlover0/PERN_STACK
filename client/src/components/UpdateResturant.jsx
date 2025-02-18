@@ -1,4 +1,4 @@
-import React, { useContext, useEffect, useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import { Await, useParams, useNavigate } from 'react-router-dom'
 import restaurantFinder from "../api/restaurantFinder"
 
