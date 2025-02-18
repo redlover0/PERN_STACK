@@ -36,8 +36,23 @@ const RestaurantsList = () => {
     };
 
     const handleUpdate = async (e,id) => {
-        navigate(`/restaurants/${id}/update`);
+        e.stopPropagation()
+
+        try {
+            navigate(`/restaurants/${id}/update`);
+        } catch (error) {
+            
+        }
     };
+
+    const handleRestaurantSelect = async (id) => {
+        
+        try {
+            navigate(`/restaurants/${id}`)
+        } catch (error) {
+            
+        }
+    }
 
     // Add this log to see what's in restaurants when rendering
     console.log("Current restaurants state:", restaurants);
@@ -59,7 +74,7 @@ const RestaurantsList = () => {
                     {restaurants && restaurants.map((restaurant) => {
                         console.log("Individual restaurant:", restaurant); // Check each restaurant object
                         return (
-                            <tr key={restaurant.id}>
+                            <tr onClick={() => handleRestaurantSelect(restaurant.id)} key={restaurant.id}>
                                 <td>{restaurant.name}</td>
                                 <td>{restaurant.location}</td>
                                 <td>{"$".repeat(restaurant.price_range)}</td>
