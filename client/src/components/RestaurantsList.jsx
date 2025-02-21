@@ -2,6 +2,8 @@ import React, { useContext, useEffect } from 'react';
 import restaurantFinder from '../api/restaurantFinder';
 import { RestaurantsContext } from '../context/RestaurantsContext';
 import { useNavigate } from "react-router-dom"
+import StarRating from './StarRating';
+
 
 const RestaurantsList = () => {
     const { restaurants, setRestaurants } = useContext(RestaurantsContext);
@@ -11,8 +13,7 @@ const RestaurantsList = () => {
         const fetchData = async () => {
             try {
                 const response = await restaurantFinder.get("/");
-                console.log("Raw API response:", response.data); // Check full response
-                console.log("Restaurants data:", response.data.data.restaurant); // Check restaurants array
+                console.log("Here is what you want", response.data.data)
                 setRestaurants(response.data.data.restaurant); 
             } catch (error) {
                 console.log(error);
@@ -21,6 +22,7 @@ const RestaurantsList = () => {
 
         fetchData();
     }, [setRestaurants]);
+
 
     const handleDelete = async (e, id) => {
         e.stopPropagation();
@@ -54,8 +56,20 @@ const RestaurantsList = () => {
         }
     }
 
-    // Add this log to see what's in restaurants when rendering
-    console.log("Current restaurants state:", restaurants);
+    const renderRating = (restaurant) => {
+        if (!restaurant.count) {
+            return (
+                <span className="text-warning">0 reviews</span>
+            )
+        }
+        
+        return (
+            <div className="d-flex align-items-center">
+                <StarRating rating={restaurant.average_rating} />
+                <span className="text-warning ml-1">({restaurant.count})</span>
+            </div>
+        )
+    }
 
     return (
         <div>
@@ -72,13 +86,14 @@ const RestaurantsList = () => {
                 </thead>
                 <tbody>
                     {restaurants && restaurants.map((restaurant) => {
+    
                         console.log("Individual restaurant:", restaurant); // Check each restaurant object
                         return (
                             <tr onClick={() => handleRestaurantSelect(restaurant.id)} key={restaurant.id}>
                                 <td>{restaurant.name}</td>
                                 <td>{restaurant.location}</td>
                                 <td>{"$".repeat(restaurant.price_range)}</td>
-                                <td>Review</td>
+                                <td>{renderRating(restaurant)}</td>
                                 <td><button onClick={(e) => handleUpdate(e,restaurant.id)} className="btn btn-warning">Update</button></td>
                                 <td>
                                     <button 
